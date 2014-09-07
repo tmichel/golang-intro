@@ -1,0 +1,243 @@
+Introduction to Go
+Sept 9 2014
+
+Tamás Michelberger
+Cubilog
+@tmichelberger
+
+* Why Go?
+
+- It's fun.
+- It's simple.
+- It's explicit.
+- It's easy to learn.
+- It's fast.
+- It's compiled and statically typed.
+- It has an awesome standard library.
+- It has built-in testing support.
+
+* Syntax
+
+Go's syntax is C-like and has reverse order for declaring things.
+
+.play code/reverse.go
+
+* Language features
+
+* Go is a modern language
+
+- Has all the modern features you need (first-class functions, closures, GC, etc.)
+- Designed to overcome the shortcomings of its predecessors, especially C.
+- Go is about getting things done and not about writing _clever_ code.
+
+* "Reverse order"
+
+The usual way:
+
+    int add(int a, int b) {
+        return a + b;
+    }
+
+Go has it the other way around:
+
+    func Add(a, b int) int {
+        return a + b
+    }
+
+Also true for other declarations:
+
+    const TheAnswer int = 42
+    var a int64
+    type myString string
+
+* Functions
+
+- are first-class citizens.
+- can return multiple values.
+
+.code code/func.go /^var/,/^}/
+
+Assigning multiple values:
+
+.play code/func.go /^\tx/
+
+* Types
+
+Go is (very) strongly typed.
+
+    var a int32 = 1
+    var b int64 = a         // this won't compile
+    var c int64 = int64(a)  // this is ok
+
+You can define your own:
+
+    type myString string
+
+* Types
+
+Type aliases are not equivalent.
+
+    var s1 myString = "Hello, Go Budapest!"
+    var s2 string   = s1                    // this won't compile
+
+What about this?
+
+.play code/string_cast.go /^type myString/,/^func main/,/^}/
+
+* Constants
+
+Examples:
+
+    42, "Go Budapest", 'x', (0.0 + 1.0i), "Hello " + "World"
+
+From the [[http://blog.golang.org/constants][The Go Blog: Constants]]:
+
+    "in Go, a constant is just a simple, unchanging value"
+
+The `const` keyword assigns a name to a constant value.
+
+    const StateReceiving = 2
+
+* Constants: iota
+
+`iota` is a neat way to create sequential constants
+
+.play code/iota.go /START OMIT/,/END OMIT/
+
+* Error handling
+
+Go does not have exceptions.
+
+A common pattern is
+
+    result, err := doSomethingThatMightFail()
+    if err != nil {
+        return err
+    }
+
+Go encourages you to return early when you can.
+
+When you have nowhere to return to you have to handle the error.
+
+* defer
+
+Another common pattern is
+
+    func printUsers() {
+        // ...
+
+        conn, err := openDataConnection()
+        if err != nil {
+            return err
+        }
+        defer conn.Close()
+
+        // ...
+    }
+
+`defer` runs a function when the host function returns, even if it panics.
+
+* (G)OO
+
+* Methods
+
+A method is a just a function with an explicit receiver.
+
+.play -numbers code/method.go /^type/,/^func/,/^func/,/^}/
+
+* Interfaces
+
+Interface is a contract.
+
+    // from net/http package
+    type Handler interface {
+            ServeHTTP(ResponseWriter, *Request)
+    }
+
+    type HandlerFunc func(ResponseWriter, *Request)
+
+    func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+       f(w, r)
+    }
+
+Simplest interface is the empty interface with no methods.
+
+    type object interface{}
+
+Every type satisfies this.
+
+* Embedding
+
+Composition over inheritance as the only option.
+
+.code code/embed.go /^type/,/^type/,/^}/
+
+Every field and method is delegated to the host type.
+
+.play code/embed.go /^\tc/,/\)$/
+
+* Packages and imports
+
+- Every file includes a package name.
+- A package is the unit of encapsulation.
+- Everything that starts with a capital letter is public.
+
+    package awesome
+
+    var (
+        PublicPackageVariable  = 1
+        privatePackageVariable = 2
+    )
+
+To use it you have to import it:
+
+    import "awesome"
+
+    // ...
+    v := awesome.PublicPackageVariable
+
+* Testing
+
+Go has built-in support for testing: `testing` package
+
+    package adder
+
+    import "testing"
+
+    func TestAdd_PositiveNumbers(t *testing.T) {
+        res := Add(2,3)
+
+        if res != 5 {
+            t.Errorf("result of addition was expected to be 5, got: %d", res)
+        }
+    }
+
+Every `*_test.go` file is included in tests.
+
+* Black box testing
+
+You can easily treat your package as a black box in your tests
+by appending `_test` to the package name.
+
+    package adder_test
+
+    import (
+        "testing"
+        "adder"
+    )
+
+    func TestAdd_PositiveNumbers(t *testing.T) {
+        res := adder.Add(2,3)
+
+        if res != 5 {
+            t.Errorf("result of addition was expected to be 5, got: %d", res)
+        }
+    }
+
+For more options check out `testing/quick` package.
+
+* Table driven tests
+
+A handy technique to easily test multiple scenarios that require the same setup and cleanup.
+
+.code code/table_driven_test.go /^func Test/,/^}/

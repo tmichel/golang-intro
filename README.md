@@ -1,14 +1,11 @@
 Golang-intro
 ============
 
-2013, Michelberger Tamás, Kir-Dev
+Michelberger Tamás
 
-Futtatható példakódok a `code/` mappában vannak.
+2013: for Kir-Dev, [view presentation][1]
 
-Előadás közben felmerült linkek:
+2014: Go Budapest meetup, [view][2]
 
-* [golang.org](http://golang.org)
-* [Go specifikáció](http://golang.org/ref/spec)
-* [Reflection](http://blog.golang.org/laws-of-reflection)
-* [tutorial](http://tour.golang.org/) - a legtöbb nyelvi elem előkerül, ezt átfutva már egy átfogó képet kaphatunk
-a go szintaxisáról
+[1]: https://github.com/tmichel/golang-intro/2013/
+[2]: http://go-talks.appspot.com/github.com/tmichel/golang-intro/2014/go-intro.slide
