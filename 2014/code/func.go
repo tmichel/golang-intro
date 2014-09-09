@@ -17,5 +17,5 @@ func mod(a, b int) (int, int) {
 
 func main() {
 	x, y := mod(10, 3)
-	fmt.Println(x, y)
+	fmt.Printf("x=%d\ny=%d\n", x, y)
 }

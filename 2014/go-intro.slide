@@ -24,12 +24,6 @@ Go's syntax is C-like and has reverse order for declaring things.
 
 * Language features
 
-* Go is a modern language
-
-- Has all the modern features you need (first-class functions, closures, GC, etc.)
-- Designed to overcome the shortcomings of its predecessors, especially C.
-- Go is about getting things done and not about writing _clever_ code.
-
 * "Reverse order"
 
 The usual way:
